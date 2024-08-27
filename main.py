@@ -3,6 +3,7 @@ import tkinter as tk
 
 
 display = ImageHandeler
+client = ClientLogic
 
 # Configures the window
 window = tk.Tk()
@@ -53,26 +54,33 @@ addcircle.place(x=162.5,y=20,anchor="center")
 navFrame.place(x=-2, y=650, anchor="sw")
 
 def clearScreen(frame: tk.Frame):
-  for child in frame.winfo_children():
-    child.destroy()
+    client.previous = None
+
+    for child in frame.winfo_children():
+        child.destroy()
 
 def drawHome():
   global window
   global currentframe
   global display
+  global currentImage
 
-  fitpic1 = display.getDisplayImage(currentframe, display.imageStorage, "images/styles/fitpic1.png", (278, 402))
-  infoBar = display.getButtonImage(fitpic1, display.imageStorage, "images/bottombar3.png", (290, 35), command=lambda: display.moveUp(window, moreInfoFrame, 325, 650, "n", 2))
-  likes = tk.Label(fitpic1, text="10K", fg="white", font=("Helvetica bold", 7), bg="#ff6c5c")
-  likes.place(x=261, y=395.5, anchor="center")
-  infoBar.place(x=135.5, y=405, anchor="s")
-  fitpic1.place(x=162.5,y=240,anchor="center")
+  # More info data
+  moreInfoFrame = tk.Frame(width=325, height=400, bg="white")
+  moreInfoFrame.place(x=162.5, y=650, anchor="n")
+
+  topbar = display.getButtonImage(moreInfoFrame, display.imageStorage, "images/moreinfotop.png", (325, 40), command=lambda: [
+    display.moveDown(window, moreInfoFrame, 500, 325, "n", 2)
+  ])
+  topbar.place(x=0, y=0, anchor="nw")
+
+  client.nextImage(window, currentframe, display, moreInfoFrame)
   crossgcircle = display.getDisplayImage(currentframe, display.imageStorage, "images/greycircle.png", (95, 95))
   crossgcircle.place(x=82.5,y=500,anchor="center")
   crosswcircle = display.getDisplayImage(currentframe, display.imageStorage, "images/whitecircle.png", (65, 65),'#d3d3d3')
   crosswcircle.place(x=82.5,y=500,anchor="center")
   cross = display.getButtonImage(currentframe, display.imageStorage, "images/cross.png", (45, 45), command=lambda: [
-    display.slideLeft(window, fitpic1, 325, 162.5, "center", 1)
+    client.nextImage(window, currentframe, display, moreInfoFrame, "dislike")
   ])
   cross.place(x=82.5,y=500,anchor="center")
   heartgcircle = display.getDisplayImage(currentframe, display.imageStorage, "images/greycircle (copy).png", (95, 95))
@@ -80,21 +88,9 @@ def drawHome():
   heartwcircle = display.getDisplayImage(currentframe, display.imageStorage, "images/whitecircle (copy).png", (65, 65),'#d3d3d3')
   heartwcircle.place(x=242.5,y=500,anchor="center")
   heart = display.getButtonImage(currentframe, display.imageStorage, "images/heart.png", (45, 45), command=lambda: [
-    print("test"),
-    ClientLogic.displayImage(window, currentframe, moreInfoFrame, display).place(x=162.5,y=240,anchor="center"),
-    display.slideRight(window, fitpic1, 325, 162.5, "center", 1),
-    ClientLogic.likeImage()
+    client.nextImage(window, currentframe, display, moreInfoFrame, "like")
   ])
   heart.place(x=242.5,y=500,anchor="center")
-
-  # More info data
-  moreInfoFrame = tk.Frame(width=325, height=400, bg="white")
-  moreInfoFrame.place(x=162.5, y=650, anchor="n")
-
-  topbar = display.getButtonImage(moreInfoFrame, display.imageStorage, "images/moreinfotop.png", (325,40), command=lambda: [
-    display.moveDown(window, moreInfoFrame, 500, 325, "n", 2)
-  ])
-  topbar.place(x=0, y=0, anchor="nw")
 
 def drawCloset():
   global window
@@ -116,7 +112,10 @@ def drawSettings():
   global currentframe
   global display
 
-  darkmode = tk.Checkbutton(currentframe, bg= "white", borderwidth=0, highlightthickness=0, relief='flat')
+  darkmodeValue = tk.BooleanVar()
+  darkmode = tk.Checkbutton(currentframe, bg= "white", borderwidth=0, highlightthickness=0, relief='flat', variable=darkmodeValue, onvalue=True, offvalue=False, command=lambda: [
+    client.darkMode(darkmodeValue.get(), window, currentframe, navFrame)
+  ])
   darkmode.place(x=300, y=100, anchor="center")
   darkmodetext = tk.Label(currentframe, text="Dark Mode",height=1, width=10, bg="white", borderwidth=0, highlightthickness=0,)
   darkmodetext.place(x=80, y=100, anchor="center")

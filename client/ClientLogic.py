@@ -20,10 +20,10 @@ def nextImage(window: tk.Tk, frame: tk.Frame, display, moreInfoFrame: tk.Frame, 
     global previous # Getting what the user can see
     global imageName # Getting the name of the image
 
-    save_csv(imageName, type)
-
     if display.moving == True: # Preventing action is stuff is already moving
         return
+
+    save_csv(imageName, type) # Saving the image to the csv file
 
     next = display.showFit(window, frame, moreInfoFrame, display) # Getting the next image
     if previous != None: # Playing in the next image

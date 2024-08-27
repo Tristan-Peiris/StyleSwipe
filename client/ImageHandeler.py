@@ -1,5 +1,6 @@
 from PIL import Image, ImageTk
 from math import cos, pi
+from client import ClientLogic
 import tkinter as tk
 
 imageStorage = {}  # Create a dictionary to store the images
@@ -107,7 +108,7 @@ def moveUp(window: tk.Tk,frame: tk.Frame, distance: float, startPoint: float, an
 #        Anchor point of the frame
 #        Speed to move the image at
 # Process: Gets the list of multiplier to calculate where to place the frame
-#          Places the frame the wait and repeat until at final ploint
+#          Places the frame the wait and repeat until at final point
 # Output: None
 # Moves the frame down
 def moveDown(window: tk.Tk ,frame: tk.Frame, distance: float, startPoint: float, anchor, speed: int):
@@ -172,3 +173,26 @@ def slideLeft(window: tk.Tk ,frame: tk.Frame, distance: float, startPoint: float
         window.after(speed)
 
     moving = False
+
+
+# Input: Window
+#        The frame the stores the page
+#        The frame to display more information
+#        The display object
+# Process: Gets the fit pic
+#          Adds the info bar
+#          Adds the likes
+# Output: The new image
+# Shows the user a fit pic
+def showFit(window: tk.Tk, currentFrame: tk.Frame, moreInfoFrame: tk.Frame, display) -> tk.Frame:
+    # Getting a random image and generating a random number
+    newImage = ClientLogic.selectPhoto(currentFrame, display) # Getting random image
+    infoButton = getButtonImage(newImage, display.imageStorage, "images/bottombar3.png", (290, 35), # Adding info bar
+       command=lambda: display.moveUp(window, moreInfoFrame, 325, 650, "n", 2)
+    )
+    likes = tk.Label(infoButton , text="100K", fg="white", font=("Helvetica bold", 8), bg="#ff6c5c") # Adding the likes
+
+    likes.place(x=270, y=28, anchor="center") # Placing the likes
+    infoButton.place(x=135.5, y=405, anchor="s") # Placing the info bar
+
+    return newImage # Returning the new image

@@ -25,7 +25,8 @@ def nextImage(window: tk.Tk, frame: tk.Frame, display, moreInfoFrame: tk.Frame, 
 
     save_csv(imageName, type) # Saving the image to the csv file
 
-    next = display.showFit(window, frame, moreInfoFrame, display) # Getting the next image
+    next = display.showFit(window, frame, moreInfoFrame, display, read_csv(imageName)) # Getting the next image
+
     if previous != None: # Playing in the next image
         next.lower(previous)
     next.place(x=162.5,y=240,anchor="center")
@@ -55,10 +56,35 @@ def save_csv(imageName: str, type: str):
     with open("closet.csv", "a", newline="") as file:
         writer = csv.writer(file)
         writer.writerow([imageName, type])
+        print(imageName)
+    if type == "like":
+        data = []
+        with open("D:\\Year 10\\computing\\sac\\StyleSwipe\\fitpics.csv", "r") as file:
+            reader = csv.reader(file, delimiter=",")
+            for row in reader:
+                if row[0] == imageName:
+                    data.append([row[0], int(row[1]) + 1])
+                    continue
+                data.append(row)
+            file.close()
+
+        with open("D:\\Year 10\\computing\\sac\\StyleSwipe\\fitpics.csv", "w") as filedata:
+            print(data)
+            writer = csv.writer(filedata)
+            writer.writerows(data)
+            filedata.close()
 
 def clear_csv():
     with open("closet.csv", "w", newline="") as file:
         pass
+
+def read_csv(value: str):
+    with open("fitpics.csv", "r") as file:
+        reader = csv.reader(file)
+        for row in reader:
+            if row[0] == value:
+                return row[1]
+    return None
 
 def selectPhoto(currentFrame: tk.Frame, display) -> tk.Frame:
     global imageName

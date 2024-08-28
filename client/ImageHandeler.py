@@ -184,13 +184,13 @@ def slideLeft(window: tk.Tk ,frame: tk.Frame, distance: float, startPoint: float
 #          Adds the likes
 # Output: The new image
 # Shows the user a fit pic
-def showFit(window: tk.Tk, currentFrame: tk.Frame, moreInfoFrame: tk.Frame, display) -> tk.Frame:
+def showFit(window: tk.Tk, currentFrame: tk.Frame, moreInfoFrame: tk.Frame, display, likes) -> tk.Frame:
     # Getting a random image and generating a random number
     newImage = ClientLogic.selectPhoto(currentFrame, display) # Getting random image
     infoButton = getButtonImage(newImage, display.imageStorage, "images/bottombar3.png", (290, 35), # Adding info bar
        command=lambda: display.moveUp(window, moreInfoFrame, 325, 650, "n", 2)
     )
-    likes = tk.Label(infoButton , text="100K", fg="white", font=("Helvetica bold", 8), bg="#ff6c5c") # Adding the likes
+    likes = tk.Label(infoButton , name="likes" ,text=likes, fg="white", font=("Helvetica bold", 8), bg="#ff6c5c") # Adding the likes
 
     likes.place(x=270, y=28, anchor="center") # Placing the likes
     infoButton.place(x=135.5, y=405, anchor="s") # Placing the info bar
